@@ -7,7 +7,6 @@
 #define WAIT 0
 #define ROUT 1
 #define REQ 2
-#define BROADCAST_ADDR 0x00 << 8 & 0xFFFF
 
 
 IoTUFMG iot = IoTUFMG(MODE_MOCK, 7);
@@ -28,12 +27,10 @@ void reset() {
   n_children = 0;
 }
 
-/* 
- *  Setup function of this instance. Executed at beginning of execution only.
+/*
+ * Gets this arduino instance address using AT command sent to xbee.
  */
-void setup() {
-  iot.setup();
-  reset();
+void getMyAddress() {
   uint8_t cmd[] = {'M', 'Y'};
   AtCommandRequest atRequestMY = AtCommandRequest(cmd);
   RemoteAtCommandResponse atResponse = RemoteAtCommandResponse();
@@ -43,20 +40,35 @@ void setup() {
   my_address = atResponse.getValue()[0] << 8 & atResponse.getValue()[1];
 }
 
+/* 
+ *  Setup function of this instance. Executed at beginning of execution only.
+ */
+void setup() {
+  iot.setup();
+  reset();
+  getMyAddress();
+}
+
 /*
  * Sends the received message as broadcast.
  */
 void broadcastMsg() {
-  reply = Tx16Request(BROADCAST_ADDR, response.getData(), sizeof(response.getData()));
+  uint8_t *payload = (uint8_t*) malloc(sizeof(uint8_t) * sizeof(response.getData()));
+  memcpy(&payload, response.getData(), sizeof(response.getData()));
+  reply = Tx16Request(BROADCAST_ADDRESS, payload, sizeof(payload));
   iot.send(reply);
+  free(payload);
 }
 
 /*
  * Sends the received message to the parent.
  */
 void forwardMsg() {
-  reply = Tx16Request(parent, response.getData(), sizeof(response.getData()));
-  iot.send(reply);  
+  uint8_t *payload = (uint8_t*) malloc(sizeof(uint8_t) * sizeof(response.getData()));
+  memcpy(&payload, response.getData(), sizeof(response.getData()));
+  reply = Tx16Request(parent, payload, sizeof(payload));
+  iot.send(reply);
+  free(payload);  
 }
 
 /* 
