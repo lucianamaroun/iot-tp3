@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libs/gnu.io.rxtx_2.1.7.4_v20071016.jar"/>
+	<classpathentry kind="lib" path="libs/gnu.io.rxtx.macosx_2.1.7.3_v20071015.jar"/>
+	<classpathentry kind="lib" path="libs/IoTUFMG.jar"/>
+	<classpathentry kind="lib" path="libs/RXTXcomm.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
