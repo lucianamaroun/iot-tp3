@@ -1,3 +1,6 @@
+import java.util.Timer;
+import java.util.TimerTask;
+
 import br.ufmg.iot.XBeeSerialMock;
 
 
@@ -12,21 +15,23 @@ public class Demultiplexer {
 		this.mock = mock;
 	}
 	
-	public void close() {
-		mock.close();
-	}
-	
-	public void receiveMessages() {
+	public boolean receiveMessages() throws InterruptedException {
+		boolean any = false;
 		while (mock.hasPacket()) {
+			any = true;
 			XBeeSerialMock.MockMessageIn msg = mock.getPacket();
-			if (msg.myAddressL == 0x00) {
+			Thread.sleep(500);
+			if (msg.remoteAddressM == 0x00 && msg.remoteAddressL == 0x01) {
 				sink.handleMessage(msg);
-			} else if (msg.myAddressL == 0x01) {
-				nodeB.handleMessage(msg);
-			} else { //broadcast
-				sink.handleMessage(msg);
-				nodeB.handleMessage(msg);
+			} else { 
+				if (msg.remoteAddressM == 0x00 && msg.remoteAddressL == 0x02) {
+					nodeB.handleMessage(msg);
+				} else if (msg.remoteAddressM == -1 && msg.remoteAddressL == -1) { // broadcast
+					sink.handleMessage(msg);
+					nodeB.handleMessage(msg);
+				}
 			}
 		}
+		return any;
 	}	
 }

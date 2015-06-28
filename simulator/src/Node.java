@@ -10,7 +10,7 @@ public class Node {
 		this.mock = mock;
 	}
 
-	public void handleMessage(XBeeSerialMock.MockMessageIn msg) {
+	public void handleMessage(XBeeSerialMock.MockMessageIn msg) throws InterruptedException {
 		switch(msg.payload[0]) {
 		case 0x00:
 			handleHelloMessage(msg);
@@ -26,22 +26,22 @@ public class Node {
 		}
 	}
 	
-	public void handleHelloMessage(XBeeSerialMock.MockMessageIn helloMsg) {
+	public void handleHelloMessage(XBeeSerialMock.MockMessageIn helloMsg) throws InterruptedException  {
 		System.out.println("--- Hello Received by " + name + ":");
 		System.out.println(helloMsg);
 	}
 
-	public void handleAckMessage(XBeeSerialMock.MockMessageIn ackMsg) {
+	public void handleAckMessage(XBeeSerialMock.MockMessageIn ackMsg) throws InterruptedException {
 		System.out.println("--- Ack Received by " + name + ":");
 		System.out.println(ackMsg);
 	}
 	
-	public void handleReqMessage(XBeeSerialMock.MockMessageIn reqMsg) {
+	public void handleReqMessage(XBeeSerialMock.MockMessageIn reqMsg) throws InterruptedException {
 		System.out.println("--- Req Received by " + name + ":");
 		System.out.println(reqMsg);
 	}
 
-	public void handleRepMessage(XBeeSerialMock.MockMessageIn reqMsg) {
+	public void handleRepMessage(XBeeSerialMock.MockMessageIn reqMsg) throws InterruptedException {
 		System.out.println("--- Rep Received by " + name + ":");
 		System.out.println(reqMsg);
 	}
