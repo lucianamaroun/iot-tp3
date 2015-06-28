@@ -7,6 +7,7 @@
 #define WAIT 0
 #define ROUT 1
 #define REQ 2
+#define LED 13
 
 
 IoTUFMG iot = IoTUFMG(MODE_MOCK, 7);
@@ -25,6 +26,7 @@ void reset() {
   state = WAIT;
   parent = NULL;
   n_children = 0;
+  digitalWrite(LED, LO);
 }
 
 /*
@@ -83,6 +85,7 @@ void handleHelloMsg() {
     parent = response.getRemoteAddress16();
     broadcastMsg();
     sendAck();
+    digitalWrite(LED, HIGH);
   } // otherwise, ignore
 }
 
@@ -105,12 +108,12 @@ void handleAckMsg() {
 }
 
 /* 
- *  Sends a reply message with a reading value. A dummy value, 0xAA, is sent, for any 
+ *  Sends a reply message with a reading value. A dummy value, 0x0A, is sent, for any 
  *  required measure. Sent only by unicast to the parent.
  */
 void sendRepMsg() {
   uint8_t measure = response.getData()[1];
-  uint8_t data[] = { 0x03, measure, my_address >> 8, my_address & 0xff, parent >> 8, parent & 0xff, 0xAA };
+  uint8_t data[] = { 0x03, measure, my_address >> 8, my_address & 0xff, parent >> 8, parent & 0xff, 0x0A };
   reply = Tx16Request(parent, response.getData(), sizeof(response.getData()));
   iot.send(reply);
 }
