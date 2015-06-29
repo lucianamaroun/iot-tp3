@@ -13,18 +13,18 @@ public class Sink extends Node {
 	
 	public void startRouting() throws InterruptedException {
 		XBeeSerialMock.MockMessageOut helloMsg = new XBeeSerialMock.MockMessageOut(
-				(byte)0x00, (byte)0x01,
+				(byte)0x00, (byte)0x03,
 				new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
 		mock.send(helloMsg);
-		Thread.sleep(500);
+		Thread.sleep(1000);
 	}
 	
 	public void startRequest() throws InterruptedException {
 		XBeeSerialMock.MockMessageOut reqMsg = new XBeeSerialMock.MockMessageOut(
-				(byte)0x00, (byte)0x01,
+				(byte)0x00, (byte)0x03,
 				new byte[] { 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 });
 		mock.send(reqMsg);
-		Thread.sleep(500);			
+		Thread.sleep(1000);			
 	}
 		
 	public void handleRepMsg(XBeeSerialMock.MockMessageIn repMsg) {

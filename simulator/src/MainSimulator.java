@@ -9,11 +9,13 @@ public class MainSimulator {
 		Demultiplexer demux = new Demultiplexer(sink, nodeB, mock);
 		mock.initialize();
 		try {
-			Thread.sleep(500);
+			Thread.sleep(1000);
 			sink.startRouting();
 			demux.receiveMessages();
-			//sink.startRequest();
-			//demux.receiveMessages();
+			sink.startRequest();
+			demux.receiveMessages();
+			sink.startRequest();
+			demux.receiveMessages();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

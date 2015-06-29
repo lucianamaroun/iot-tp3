@@ -14,7 +14,7 @@ public class CommonNode extends Node {
 	public void handleHelloMessage(XBeeSerialMock.MockMessageIn helloMsg) throws InterruptedException {
 		super.handleHelloMessage(helloMsg);
 		if (parent == null) {
-			parent = new byte[] {helloMsg.myAddressM, helloMsg.myAddressL};
+			parent = new byte[] {helloMsg.myAddressL, helloMsg.myAddressM};
 			// enter data phase
 			timer = new Timer();
 			timer.schedule(new ResetTask(), Constants.beta);
@@ -38,12 +38,16 @@ public class CommonNode extends Node {
         }
     }
 	
-	public void handleReqMsg(XBeeSerialMock.MockMessageIn reqMsg) throws InterruptedException {
+	public void handleReqMessage(XBeeSerialMock.MockMessageIn reqMsg) throws InterruptedException {
 		super.handleReqMessage(reqMsg);
-		if (parent != null && reqMsg.myAddressM == parent[0] && reqMsg.myAddressL == parent[1]) {
+		if (parent != null && reqMsg.myAddressL == parent[0] && reqMsg.myAddressM == parent[1]) {
+			XBeeSerialMock.MockMessageOut newReqMsg = new XBeeSerialMock.MockMessageOut(
+					(byte)0x00, (byte)0x02, reqMsg.payload); 
+			mock.send(newReqMsg);
+			Thread.sleep(500);	
 			XBeeSerialMock.MockMessageOut repMsg = new XBeeSerialMock.MockMessageOut(
 					(byte)0x00, (byte)0x02, 
-					new byte[] { 0x03, 0x00, 0x00, 0x01, parent[0], parent[1], 0x0A }); 
+					new byte[] { 0x03, 0x01, 0x00, 0x02, parent[0], parent[1], 0x0A }); 
 			mock.send(repMsg);
 			Thread.sleep(500);			
 		}
@@ -52,7 +56,7 @@ public class CommonNode extends Node {
 	public void handleRepMsg(XBeeSerialMock.MockMessageIn repMsg) throws InterruptedException {
 		super.handleRepMessage(repMsg);
 		if (parent != null) {
-			mock.send(new XBeeSerialMock.MockMessageOut(parent[0], parent[1], repMsg.payload));	
+			mock.send(new XBeeSerialMock.MockMessageOut((byte)0x00, (byte)0x02, repMsg.payload));	
 			Thread.sleep(500);				
 		}
 	}

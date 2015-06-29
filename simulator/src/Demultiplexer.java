@@ -21,7 +21,7 @@ public class Demultiplexer {
 			any = true;
 			XBeeSerialMock.MockMessageIn msg = mock.getPacket();
 			Thread.sleep(500);
-			if (msg.remoteAddressM == 0x00 && msg.remoteAddressL == 0x01) {
+			if (msg.remoteAddressM == 0x00 && msg.remoteAddressL == 0x03) {
 				sink.handleMessage(msg);
 			} else { 
 				if (msg.remoteAddressM == 0x00 && msg.remoteAddressL == 0x02) {
