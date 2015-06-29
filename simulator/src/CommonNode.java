@@ -47,7 +47,7 @@ public class CommonNode extends Node {
 			Thread.sleep(500);	
 			XBeeSerialMock.MockMessageOut repMsg = new XBeeSerialMock.MockMessageOut(
 					(byte)0x00, (byte)0x02, 
-					new byte[] { 0x03, 0x01, 0x00, 0x02, parent[0], parent[1], 0x0A }); 
+					new byte[] { 0x03, 0x01, 0x02, 0x00, parent[1], parent[0], 0x0A }); 
 			mock.send(repMsg);
 			Thread.sleep(500);			
 		}

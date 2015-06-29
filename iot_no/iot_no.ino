@@ -7,10 +7,10 @@
 #define ROUT 1
 #define REQ 2
 #define LED 13
-#define DELAY 250
+#define DELAY 25
 
 
-IoTUFMG iot = IoTUFMG(MODE_MOCK, 7);
+IoTUFMG iot = IoTUFMG(MODE_NORMAL, 7);
 Rx16Response response = Rx16Response();
 Tx16Request reply;
 SimpleTimer timer;
@@ -26,8 +26,7 @@ void setup() {
   iot.setup();
   reset();
   my_address = (uint16_t) 0x00;
-  my_address = (my_address << 8) | 0x01;
-  getMyAddress();
+  my_address = (my_address << 8) | 0x11;
 }
 
 /* 
@@ -37,22 +36,6 @@ void reset() {
   parent = 0;
   n_children = 0;
   digitalWrite(LED, LOW);
-}
-
-/*
- * Gets this arduino instance address using AT command sent to xbee.
- */
-void getMyAddress() {
-  uint8_t cmd[] = {'M', 'Y'};
-  AtCommandRequest atRequestMY = AtCommandRequest(cmd);
-  RemoteAtCommandResponse atResponse = RemoteAtCommandResponse();
-  XBee xbee = XBee();
-  xbee.send(atRequestMY);
-  xbee.getResponse().getAtCommandResponse(atResponse);
-  if (atResponse.getValue()[0] != 0x00 | atResponse.getValue()[1] != 0x00) {
-    my_address = (uint16_t) atResponse.getValue()[0];
-    my_address = (my_address << 8) | atResponse.getValue()[1];
-  }
 }
 
 /*
@@ -123,7 +106,7 @@ void handleReqMsg() {
  */
 void sendRepMsg() {
   uint8_t metric = response.getData()[1];
-  uint8_t data[] = { 0x03, metric, my_address >> 8, my_address & 0xff, parent >> 8, parent & 0xff, 0x0A };
+  uint8_t data[] = { 0x03, metric, my_address & 0xff, my_address >> 8, parent & 0xff, parent >> 8, 0x0A };
   reply = Tx16Request(parent, data, 7);
   iot.send(reply);
 }
@@ -161,5 +144,5 @@ void loop() {
   }
   timer.run();
   
-  delay(200);
+  delay(DELAY);
 }

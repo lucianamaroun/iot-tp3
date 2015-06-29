@@ -1,6 +1,3 @@
-import java.util.Timer;
-import java.util.TimerTask;
-
 import br.ufmg.iot.XBeeSerialMock;
 
 
